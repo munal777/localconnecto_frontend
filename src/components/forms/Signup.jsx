@@ -1,7 +1,43 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../api';
+import { useState } from 'react';
+
 
 function Signup() {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate(); 
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError(null);
+    setLoading(true);
+
+    const userData = {
+      username,
+      email,
+      password,
+    }
+
+    try {
+      const res = await api.post('/auth/registration/', userData);
+      if (res.status === 201) {
+        navigate('/login');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('An error occurred, please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
     return (
         <div className="py-20">
           <div className="flex h-full items-center justify-center">
