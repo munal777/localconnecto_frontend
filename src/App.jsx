@@ -10,6 +10,7 @@ import About from "./components/About";
 import NotFound from "./components/NotFound";
 import { userAuthentication } from "./components/auth";
 import RedirectGoogleAuth from "./components/GoogleRedirectHandler";
+import ProfileUpdateForm from "./components/UpdateProfile";
 
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
   return (
     <>
       <Router>
-        <NavbarGuest />
+        <NavbarUser />
         <Routes>
           <Route path="/login/callback" element={<RedirectGoogleAuth />} />
           <Route path="/" element={<Home />} />
@@ -33,6 +34,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<ProfileUpdateForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
