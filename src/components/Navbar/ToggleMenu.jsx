@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { LogOut, User, Activity, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
+import { userAuthentication } from "../auth";
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);

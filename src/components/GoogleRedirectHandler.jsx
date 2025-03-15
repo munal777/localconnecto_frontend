@@ -20,7 +20,7 @@ export default function RedirectGoogleAuth() {
 
 
             axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-            axios.get('http://localhost:8000/auth/user/')
+            axios.get('http://127.0.0.1:8000/auth/user/')
             .then(response => {
                 console.log('User data', response.data);
                 navigate('/')

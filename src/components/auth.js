@@ -64,10 +64,13 @@ export const userAuthentication = () => {
             const res = await api.post('/auth/google/validate_token/', {
                 access_token: googleAccessToken,
             });
+
+            
             console.log("Validate response: ", res.data);
             return res.data.valid;
         } catch (err) {
             console.error('Error validating Google token', err);
+            localStorage.removeItem(GOOGLE_ACCESS_TOKEN); //clearing invalid token
             return false;
         }
     }

@@ -58,7 +58,8 @@ function Login() {
                         className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
                         id="email"
                         type="email"
-                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="email@example.com"
                         required
                       />
@@ -80,7 +81,8 @@ function Login() {
                         className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
                         id="password"
                         type="password"
-                        name="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                       />
                     </div>
@@ -93,6 +95,7 @@ function Login() {
                   <button
                     type="submit"
                     className="border transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed border-transparent bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white disabled:bg-gray-300 disabled:text-gray-700 rounded-lg "
+                    onClick={handleLogin}
                   >
                     <span className="flex items-center justify-center gap-1 font-medium py-1 px-2.5 text-base">
                       Login
