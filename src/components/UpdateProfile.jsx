@@ -1,8 +1,15 @@
 import React from "react";
+import { Camera } from "lucide-react";
 
 const ProfileUpdateForm = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Handle form submission here
+    console.log("Form submitted");
+  };
+
   return (
-    <form onSubmit="" className="bg-gradient-to-rmin-h-screen flex items-center justify-center p-10">
+    <div className="bg-gradient-to-rmin-h-screen flex items-center justify-center p-10">
       <div className="w-full max-w-3xl rounded-2xl bg-white p-8 shadow-2xl">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
@@ -10,7 +17,7 @@ const ProfileUpdateForm = () => {
           <div className="text-center mt-4 md:mt-0">
             <div className="relative">
               <img
-                src="https://i.pravatar.cc/300"
+                src=""
                 alt="Profile Picture"
                 className="rounded-full w-32 h-32 mx-auto border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 ring-2 ring-gray-200"
               />
@@ -18,24 +25,7 @@ const ProfileUpdateForm = () => {
                 htmlFor="upload_profile"
                 className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-100"
               >
-                <svg
-                  className="w-6 h-6 text-blue-700"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"
-                  ></path>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z"
-                  ></path>
-                </svg>
+                <Camera className="w-6 h-6 text-blue-700"/>
               </label>
               <input
                 type="file"
@@ -52,7 +42,7 @@ const ProfileUpdateForm = () => {
         </div>
 
         {/* Profile Update Form */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {/* First Name and Last Name */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -140,7 +130,7 @@ const ProfileUpdateForm = () => {
           </div>
         </form>
       </div>
-    </form>
+    </div>
   );
 };
 

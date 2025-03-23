@@ -2,51 +2,118 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../token";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
+import { userAuthentication } from "../auth";
 
 function Login() {
+  const {login} = userAuthentication()
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [sucess, setSucess] = useState("");
+  // const [sucess, setSucess] = useState("");
+
+  const notify = (message) => toast.success(message);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Add this function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleLogin = async (e) => {
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
+
     e.preventDefault();
     try {
-      const res = await api.post('/auth/login/', { email, password });
+      const res = await api.post("/auth/login/", { email, password });
 
       const { access, refresh } = res.data;
 
       localStorage.setItem(ACCESS_TOKEN, access);
       localStorage.setItem(REFRESH_TOKEN, refresh);
 
-      setSucess("Login Successful");
+      notify("Login Successful");
 
-      navigate("/");
+      setTimeout(() => {
+        navigate("/");
+        window.location.reload();
+      }, 3000);
+
+      // navigate("/");
     } catch (err) {
-      setError(err.response?.data?.detail || "Invalid email or password");
+      // Get the error message from the response
+      let errorMessage = "Login failed. Please try again.";
+
+      if (err.response) {
+        // dj_rest_auth can return errors in different formats
+        if (err.response.data.detail) {
+          // If error is in the 'detail' field
+          errorMessage = err.response.data.detail;
+        } else if (err.response.data.non_field_errors) {
+          // For non-field errors like incorrect credentials
+          errorMessage = err.response.data.non_field_errors[0];
+        } else if (typeof err.response.data === "object") {
+          // For field-specific errors
+          const firstErrorField = Object.keys(err.response.data)[0];
+          if (
+            firstErrorField &&
+            Array.isArray(err.response.data[firstErrorField])
+          ) {
+            errorMessage = `${firstErrorField}: ${err.response.data[firstErrorField][0]}`;
+          }
+        }
+      }
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://127.0.0.1:8000/accounts/google/login/"
-  }
+    window.location.href = "http://127.0.0.1:8000/accounts/google/login/";
+  };
+
+
+  useEffect(() => {
+    const handleGoogleCallback = async () => {
+        // Check if we are on the callback page
+        if (window.location.pathname === '/login/callback') {
+            // Extract the token from URL query params
+            const params = new URLSearchParams(window.location.search);
+            const googleToken = params.get("access_token");
+
+            if (googleToken) {
+                localStorage.setItem(GOOGLE_ACCESS_TOKEN, googleToken);
+                
+                // Validate the token through the AuthContext
+                await login({ google_token: googleToken });
+                navigate("/", { replace: true });
+            }
+        }
+    };
+
+    handleGoogleCallback();
+}, [navigate, login]);
 
   return (
     <div className="py-20">
       <div className="flex h-full items-center justify-center">
-        <div className="rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-900 flex-col flex h-full items-center justify-center sm:px-4">
+        <div className="rounded-lg border border-gray-200 bg-gray-100 shadow-md flex-col flex h-full items-center justify-center sm:px-4">
           <div className="flex h-full flex-col justify-center gap-4 p-6">
             <div className="left-0 right-0 inline-block border-gray-200 px-2 py-2.5 sm:px-4">
               <form className="flex flex-col gap-4 pb-4">
-                <h1 className="mb-4 text-2xl font-bold  dark:text-white">
+                <h1 className="mb-4 text-2xl font-bold text-indigo-600">
                   Login
                 </h1>
                 <div>
                   <div className="mb-2">
                     <label
-                      className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                      className="text-sm font-medium text-gray-700"
                       htmlFor="email"
                     >
                       Email:
@@ -55,7 +122,7 @@ function Login() {
                   <div className="flex w-full rounded-lg pt-1">
                     <div className="relative w-full">
                       <input
-                        className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
+                        className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-white border-gray-300 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 p-2.5 text-sm rounded-lg"
                         id="email"
                         type="email"
                         value={email}
@@ -69,32 +136,44 @@ function Login() {
                 <div>
                   <div className="mb-2">
                     <label
-                      className="text-sm font-medium text-gray-900 dark:text-gray-300"
+                      className="text-sm font-medium text-gray-700"
                       htmlFor="password"
                     >
-                      Password
+                      Password:
                     </label>
                   </div>
                   <div className="flex w-full rounded-lg pt-1">
                     <div className="relative w-full">
                       <input
-                        className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 text-gray-900 focus:border-cyan-500 focus:ring-cyan-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
+                        className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-white border-gray-300 text-gray-900 focus:border-indigo-500 focus:ring-indigo-500 p-2.5 text-sm rounded-lg"
                         id="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         value={password}
+                        placeholder="Enter your password"
                         onChange={(e) => setPassword(e.target.value)}
                         required
                       />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        onClick={togglePasswordVisibility}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-5 w-5 text-gray-500" />
+                        ) : (
+                          <Eye className="h-5 w-5 text-gray-500" />
+                        )}
+                      </button>
                     </div>
                   </div>
-                  <p className="mt-2 cursor-pointer text-blue-500 hover:text-blue-600">
+                  <p className="mt-2 cursor-pointer text-indigo-600 hover:text-indigo-700">
                     Forgot password?
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
                   <button
                     type="submit"
-                    className="border transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed border-transparent bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white disabled:bg-gray-300 disabled:text-gray-700 rounded-lg "
+                    className="border transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed border-transparent bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white disabled:bg-gray-300 disabled:text-gray-700 rounded-lg "
                     onClick={handleLogin}
                   >
                     <span className="flex items-center justify-center gap-1 font-medium py-1 px-2.5 text-base">
@@ -102,14 +181,14 @@ function Login() {
                     </span>
                   </button>
 
-                  <div className="m-auto p-3 text-xl font-semibold text-white">
+                  <div className="m-auto p-3 text-xl font-semibold text-gray-500">
                     or
                   </div>
 
                   <button
                     type="button"
                     onClick={handleGoogleLogin}
-                    className="transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed bg-white hover:bg-gray-100 text-gray-900 border border-gray-200 disabled:bg-gray-300 disabled:text-gray-700 rounded-lg "
+                    className="transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 disabled:bg-gray-300 disabled:text-gray-700 rounded-lg "
                   >
                     <span className="flex items-center justify-center gap-1 font-medium py-1 px-2.5 text-base">
                       <svg
@@ -147,11 +226,12 @@ function Login() {
                   </button>
                 </div>
               </form>
+
               <div className="min-w-[270px]">
-                <div className="mt-4 text-center dark:text-gray-200">
+                <div className="mt-4 text-center text-gray-600">
                   New user?{" "}
                   <Link
-                    className="text-blue-500 underline hover:text-blue-600"
+                    className="text-indigo-600 underline hover:text-indigo-700"
                     to="/signup"
                   >
                     Create account here

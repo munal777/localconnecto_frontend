@@ -1,6 +1,5 @@
-import React, { use } from "react";
-import NavbarGuest from "./components/Navbar/NavbarGuest";
-import NavbarUser from "./components/Navbar/NavbarUser";
+import React from "react";
+import Navbar from "./components/Navbar/Navbar";
 import Signup from "./components/forms/Signup";
 import Login from "./components/forms/Login";
 import {
@@ -16,48 +15,33 @@ import NotFound from "./components/NotFound";
 import { userAuthentication } from "./components/auth";
 import RedirectGoogleAuth from "./components/GoogleRedirectHandler";
 import ProfileUpdateForm from "./components/UpdateProfile";
-import ProtectedRoute from "./components/AuthAccess";
+// import { AuthContext, AuthProvider } from "./components/auth";
+// import ProtectedRoute from "./components/AuthAccess";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./style.css"; 
+import Footer from "./components/Footer";
 
 function App() {
-  const {isAuthorized} = userAuthentication()
-  // const ProtectedLogin = () => {
-  //   return isAuthorized ? <Navigate to='/' /> : <Login />
-  // }
-
-  // const ProtectedRegister = () => {
-  //   return isAuthorized ? <Navigate to='/' /> : <Signup />
-  // }
+  const { isAuthorized } = userAuthentication()
 
   return (
-    <>
+    
       <Router>
-      {isAuthorized ? <NavbarUser /> : <NavbarGuest />}
+        <Navbar />
+        <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
           <Route path="/login/callback" element={<RedirectGoogleAuth />} />
           <Route path="/" element={<Home />} />
           <Route path="/listed_items" element={<ListedItems />} />
           <Route path="/about" element={<About />} />
-          <Route
-            path="/login"
-            element={
-              <ProtectedRoute>
-                <Login />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <ProtectedRoute>
-                <Signup />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/profile" element={<ProfileUpdateForm />} />
+          <Route path="/login" element={isAuthorized ? <Navigate to="/" /> : <Login />} />
+          <Route path="/signup" element={isAuthorized ? <Navigate to="/" /> : <Signup />} />
+          <Route path="/profile" element={isAuthorized ? <ProfileUpdateForm />: <Home />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer />
       </Router>
-    </>
   );
 }
 

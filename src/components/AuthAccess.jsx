@@ -4,6 +4,8 @@ import { userAuthentication } from "./auth";
 
 function ProtectedRoute({children}) {
     const {isAuthorized} = userAuthentication();
+
+    console.log(isAuthorized);
     
     if (isAuthorized === null) {
         return <div>Loading ...</div>
