@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-center p-4">
+    <div className="flex flex-col border-t-1 border-gray-200 items-center justify-center min-h-screen bg-gray-100 text-center p-4">
       {/* Icon */}
       <AlertTriangle className="w-24 h-24 text-yellow-500 mb-4" />
 

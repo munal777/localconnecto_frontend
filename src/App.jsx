@@ -21,6 +21,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css"; 
 import Footer from "./components/Footer";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const { isAuthorized } = userAuthentication()
@@ -39,6 +40,7 @@ function App() {
           <Route path="/signup" element={isAuthorized ? <Navigate to="/" /> : <Signup />} />
           <Route path="/profile" element={isAuthorized ? <ProfileUpdateForm />: <Home />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
         <Footer />
       </Router>

@@ -55,7 +55,7 @@ function Navbar() {
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors hover:text-indigo-600 ${
+                `text-base font-medium transition-colors hover:text-indigo-600 ${
                   isActive
                     ? "text-indigo-700 bg-indigo-100 px-2 py-1 rounded-sm"
                     : "text-gray-600"

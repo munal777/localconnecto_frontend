@@ -59,21 +59,21 @@ export default function ProfileDropdown() {
       <div className="p-2 space-y-2">
         <Link
           to="/profile"
-          className="flex items-center px-4 py-2 hover:bg-indigo-100 text-indigo-600 rounded-sm"
+          className="flex items-center px-4 py-2 hover:bg-gray-100 text-gray-600 rounded-sm"
           onClick={handleLinkClick} // Close dropdown on click
         >
           <User className="w-5 h-5 mr-2" /> Edit Profile
         </Link>
         <a
           href="#"
-          className="flex items-center px-4 py-2 hover:bg-indigo-100 text-indigo-600 rounded-sm"
+          className="flex items-center px-4 py-2 hover:bg-gray-100 text-gray-600 rounded-sm"
           onClick={handleLinkClick} // Close dropdown on click
         >
           <Heart className="w-5 h-5 mr-2" /> Saved Items
         </a>
         <a
           href="#"
-          className="flex items-center px-4 py-2 hover:bg-indigo-100 text-indigo-600 rounded-sm"
+          className="flex items-center px-4 py-2 hover:bg-gray-100 text-gray-600 rounded-sm"
           onClick={handleLinkClick} // Close dropdown on click
         >
           <Upload className="w-5 h-5 mr-2" /> Create Listing
