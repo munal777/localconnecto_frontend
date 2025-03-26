@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useContext } from "react";
 import { LogOut, User, Upload, Heart, ShoppingBasket } from "lucide-react";
 import { Link } from "react-router-dom";
-import { userAuthentication } from "../auth";
+import { userAuthentication } from "./auth/auth";
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,13 +71,13 @@ export default function ProfileDropdown() {
         >
           <Heart className="w-5 h-5 mr-2" /> Saved Items
         </a>
-        <a
-          href="#"
+        <Link
+          to="/listings/new"
           className="flex items-center px-4 py-2 hover:bg-gray-100 text-gray-600 rounded-sm"
           onClick={handleLinkClick} // Close dropdown on click
         >
           <Upload className="w-5 h-5 mr-2" /> Create Listing
-        </a>
+        </Link>
         <div className="border-t border-gray-200"></div>
         {isAuthorized && (
           <Link

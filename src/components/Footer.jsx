@@ -1,9 +1,15 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Facebook, Instagram, Twitter } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  MapPin,
+  Mail,
+  Phone,
+} from "lucide-react";
 
 function Footer() {
-
   return (
     <footer className="w-full border-t bg-gray-900 py-6 md:py-8">
       <div className="container px-4 md:px-6">
@@ -11,7 +17,11 @@ function Footer() {
           {/* Brand Section */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center space-x-1.5">
-              <img src="/src/assets/LC2.png" alt="" className='w-12 h-12 text-white' />
+              <img
+                src="/src/assets/LC2.png"
+                alt=""
+                className="w-12 h-12 text-white"
+              />
               <span className="text-xl font-bold text-indigo-500 hover:text-indigo-400 transition-colors duration-300">
                 LocalConnecto
               </span>
@@ -49,9 +59,9 @@ function Footer() {
             <h3 className="text-sm font-medium text-indigo-500">Explore</h3>
             <ul className="space-y-2 text-sm">
               {[
-                { label: 'Browse Listings', to: '/listings' },
-                { label: 'Free Items', to: '/listings?category=free' },
-                { label: 'Create Listing', to: '/listings/create' },
+                { label: "Browse Listings", to: "/listings" },
+                { label: "Free Items", to: "/listings?category=free" },
+                { label: "Create Listing", to: "/listings/create" },
               ].map((item, index) => (
                 <li key={index}>
                   <Link
@@ -70,9 +80,9 @@ function Footer() {
             <h3 className="text-sm font-medium text-indigo-500">Company</h3>
             <ul className="space-y-2 text-sm">
               {[
-                { label: 'About Us', to: '/about' },
-                { label: 'Contact', to: '/contact' },
-                { label: 'Blog', to: '/blog' },
+                { label: "About Us", to: "/about" },
+                { label: "Contact", to: "/contact" },
+                { label: "Blog", to: "/blog" },
               ].map((item, index) => (
                 <li key={index}>
                   <Link
@@ -88,22 +98,24 @@ function Footer() {
 
           {/* Legal Section */}
           <div className="space-y-4">
-            <h3 className="text-sm font-medium text-indigo-500">Legal</h3>
+            <h3 className="text-sm font-medium text-indigo-500">Contact Us</h3>
             <ul className="space-y-2 text-sm">
-              {[
-                { label: 'Terms of Service', to: '/terms' },
-                { label: 'Privacy Policy', to: '/privacy' },
-                { label: 'Cookie Policy', to: '/cookies' },
-              ].map((item, index) => (
-                <li key={index}>
-                  <Link
-                    to={item.to}
-                    className="text-gray-400 hover:text-indigo-500 transition-colors duration-300"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
+              <li className="text-gray-400 hover:text-indigo-500 transition-colors duration-300 flex space-x-3">
+                <MapPin className="h-5 w-5" />
+                <span className="text-sm">
+                  Sunsari, Nepal
+                </span>
+              </li>
+              <li className="text-gray-400 hover:text-indigo-500 transition-colors duration-300 flex space-x-3">
+                <Mail className="h-5 w-5" />
+                <span className="text-sm">
+                localconnecto49@gmail.com
+                </span>
+              </li>
+              <li className="text-gray-400 hover:text-indigo-500 transition-colors duration-300 flex space-x-3">
+                <Phone className="h-5 w-5 " />
+                <span className="text-sm">+977 9827347924</span>
+              </li>
             </ul>
           </div>
         </div>
@@ -111,7 +123,8 @@ function Footer() {
         {/* Copyright Section */}
         <div className="mt-8 border-t border-gray-800 pt-6">
           <p className="text-center text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} LocalConnecto. All rights reserved.
+            &copy; {new Date().getFullYear()} LocalConnecto. All rights
+            reserved.
           </p>
         </div>
       </div>

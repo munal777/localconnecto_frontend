@@ -1,10 +1,10 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../api";
+import api from "../api/api";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
-import { userAuthentication } from "../auth";
+import { userAuthentication } from "../auth/auth";
 
 function Signup() {
   const { login } = userAuthentication();

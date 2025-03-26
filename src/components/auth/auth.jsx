@@ -1,7 +1,8 @@
 import { jwtDecode } from "jwt-decode";
 import { createContext, useState, useEffect } from "react";
-import api from "./api";
-import { ACCESS_TOKEN, GOOGLE_ACCESS_TOKEN, REFRESH_TOKEN } from "../token";
+import { ACCESS_TOKEN, GOOGLE_ACCESS_TOKEN, REFRESH_TOKEN } from "../../token";
+import api from "../api/api";
+
 
 export const userAuthentication = () => {
   const [isAuthorized, setIsAuthorized] = useState(false);

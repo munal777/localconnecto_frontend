@@ -3,7 +3,7 @@ import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import ProfileDropdown from "./ToggleMenu";
 // import { AuthContext } from "../auth";
-import { userAuthentication } from "../auth";
+import { userAuthentication } from "./auth/auth";
 
 function Navbar() {
   const { isAuthorized } = userAuthentication();
@@ -39,7 +39,7 @@ function Navbar() {
           </NavLink>
 
           <NavLink
-            to="/listed_items"
+            to="/listings"
             className={({ isActive }) =>
               `text-base font-medium transition-colors hover:text-indigo-600 ${
                 isActive

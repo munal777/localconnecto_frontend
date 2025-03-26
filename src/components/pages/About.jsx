@@ -1,7 +1,7 @@
 import React from "react";
 import { CheckCircle, Heart, Shield, Map, Gift, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { userAuthentication } from "./auth";
+import { userAuthentication } from "../auth/auth";
 
 function About() {
   const { isAuthorized } = userAuthentication();
@@ -9,32 +9,6 @@ function About() {
   return (
     <div className="flex flex-col border-t-1 border-gray-300">
       {/* Hero Section */}
-      {/* <section className="w-full py-12 md:py-24 lg:py-32 bg-indigo-50">
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-            <div className="flex flex-col justify-center space-y-4">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-indigo-700">
-                  About LocalConnecto
-                </h1>
-                <p className="max-w-[600px] text-gray-600 md:text-xl">
-                  We're on a mission to build stronger communities through local
-                  connections and sustainable sharing.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="relative w-full h-[300px] sm:h-[400px]">
-                <img
-                  src="/src/assets/share.jpg"
-                  alt="LocalConnecto community"
-                  className="object-cover rounded-xl  w-full h-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
       <section className="relative pt-16 pb-20 md:pt-24 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-50 to-white -z-10"></div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -51,46 +25,6 @@ function About() {
       </section>
 
       {/* Our Story Section */}
-      {/* <section className="w-full py-12 md:py-24 bg-white">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-indigo-700">
-                Our Story
-              </h2>
-              <p className="max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                How LocalConnecto came to be
-              </p>
-            </div>
-          </div>
-          <div className="mx-auto max-w-3xl mt-8">
-            <p className="text-gray-600 mb-4">
-              LocalConnecto was founded in 2024 with a simple idea for the SYP:
-              to create a platform that helps people connect with their
-              neighbors while reducing waste and promoting sustainability.
-            </p>
-            <p className="text-gray-600 mb-4">
-              Our founder, Munal Poudel, noticed how many perfectly good items
-              were being thrown away in her neighborhood while others were in
-              need of those same items. She envisioned a community-based
-              platform where people could easily share, give away, or sell items
-              locally.
-            </p>
-            <p className="text-gray-600 mb-4">
-              What started as a small community project has grown into a
-              thriving platform connecting thousands of users across multiple
-              cities. We're proud to have facilitated countless exchanges that
-              have kept items out of landfills and helped people find what they
-              need without buying new.
-            </p>
-            <p className="text-gray-600">
-              Today, LocalConnecto continues to grow with the mission of
-              strengthening local communities, promoting sustainable
-              consumption, and making it easy for neighbors to help each other.
-            </p>
-          </div>
-        </div>
-      </section> */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
@@ -109,7 +43,7 @@ function About() {
               </div>
               <div className="md:w-1/2 animate-fade-in">
                 <img 
-                  src="/src/assets/1708272591960.jpg" 
+                  src="/src/assets/aboutus.jpg" 
                   alt="Community gathering" 
                   className="rounded-2xl shadow-lg w-full"
                 />
@@ -118,53 +52,6 @@ function About() {
           </div>
         </div>
       </section>
-
-      {/* How It Works Section */}
-      {/* <section className="w-full py-12 md:py-24 bg-indigo-50">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-indigo-700">
-                How It Works
-              </h2>
-              <p className="max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Simple steps to connect with your community
-              </p>
-            </div>
-          </div>
-          <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 md:grid-cols-3">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
-                <Search className="h-8 w-8 text-indigo-600" />
-              </div>
-              <h3 className="text-xl font-bold text-indigo-700">Find Items</h3>
-              <p className="text-gray-600">
-                Browse listings in your area or search for specific items you
-                need
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
-                <MessageCircle className="h-8 w-8 text-indigo-600" />
-              </div>
-              <h3 className="text-xl font-bold text-indigo-700">Connect</h3>
-              <p className="text-gray-600">
-                Message the owner to arrange pickup or delivery details
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
-                <Heart className="h-8 w-8 text-indigo-600" />
-              </div>
-              <h3 className="text-xl font-bold text-indigo-700">Exchange</h3>
-              <p className="text-gray-600">
-                Meet locally to complete the exchange and build community
-                connections
-              </p>
-            </div>
-          </div>
-        </div>
-      </section> */}
 
       <section className="py-16 bg-white">
         

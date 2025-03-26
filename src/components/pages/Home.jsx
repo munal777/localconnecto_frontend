@@ -9,7 +9,7 @@ import {
   Shield,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { userAuthentication } from "./auth";
+import { userAuthentication } from "../auth/auth";
 
 function Home() {
   const { isAuthorized } = userAuthentication();
@@ -17,47 +17,6 @@ function Home() {
   return (
     <div className="flex flex-col border-t-1 border-gray-200">
       {/* Hero Section */}
-      {/* <section className="w-full py-12 md:py-24 lg:py-32 bg-indigo-50">
-        <div className="container px-4 md:px-6">
-          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
-            <div className="flex flex-col justify-center space-y-4">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none text-indigo-700">
-                  Connect with your <span className="text-black">local community</span> 
-                </h1>
-                <p className="max-w-[600px] text-gray-600 md:text-xl">
-                Buy, sell, or give away items in your local area.
-                LocalConnecto brings communities together through a simple, location-based marketplace.
-                </p>
-              </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Link to="/listings">
-                  <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md flex items-center">
-                    Explore Listings <ArrowRight className="ml-2 h-4 w-4" />
-                  </button>
-                </Link>
-                {!isAuthorized && (
-                  <Link to="/signup">
-                    <button className="border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-md">
-                      Sign Up Free
-                    </button>
-                  </Link>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px]">
-                <img
-                  src="/src/assets/share.jpg"
-                  alt="LocalConnecto marketplace"
-                  className="object-cover rounded-xl  w-full h-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
-
       <section className="relative pt-16 pb-20 md:pt-24 md:pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-50 to-white -z-10"></div>
         <div className="container px-4 md:px-6">
@@ -101,53 +60,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Features Section */}
-      {/* <section className="w-full py-12 md:py-24 bg-indigo-50">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-indigo-700">
-                How LocalConnecto Works
-              </h2>
-              <p className="max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Connect with your community in three simple steps
-              </p>
-            </div>
-          </div>
-          <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
-                <Search className="h-8 w-8 text-indigo-600" />
-              </div>
-              <h3 className="text-xl font-bold text-indigo-700">Find Items</h3>
-              <p className="text-gray-600">
-                Search for free or purchasable items in your local area
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
-                <MapPin className="h-8 w-8 text-indigo-600" />
-              </div>
-              <h3 className="text-xl font-bold text-indigo-700">
-                Connect Locally
-              </h3>
-              <p className="text-gray-600">
-                Filter by location to find items in your neighborhood
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
-                <ShoppingBag className="h-8 w-8 text-indigo-600" />
-              </div>
-              <h3 className="text-xl font-bold text-indigo-700">Get or Buy</h3>
-              <p className="text-gray-600">
-                Arrange pickup for free items or purchase what you need
-              </p>
-            </div>
-          </div>
-        </div>
-      </section> */}
 
       {/* Features Section */}
       <section className="py-20 bg-white" id="features">
@@ -204,38 +116,6 @@ function Home() {
           </div>
         </div>
       </section>
-
-      {/* Categories Section */}
-      {/* <section className="w-full py-12 md:py-24 bg-white">
-        <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-indigo-700">
-                Browse Categories
-              </h2>
-              <p className="max-w-[700px] text-gray-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Discover items by category in your local community
-              </p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                to={`/listings?category=${category.slug}`}
-                className="flex flex-col items-center p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-600 mb-3">
-                  <category.icon className="h-6 w-6 text-white" />
-                </div>
-                <span className="text-indigo-700 font-medium">
-                  {category.name}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section> */}
 
       {/* Benefits Section */}
       <section className="py-20 bg-gradient-to-b from-white to-indigo-50">
@@ -346,8 +226,8 @@ function Home() {
       </section>
 
       {!isAuthorized && (
-        <section className="w-full py-12 md:py-24 bg-white">
-          <div className="container px-4 md:px-6">
+        <section className="py-20 bg-gradient-to-t from-white to-indigo-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-indigo-700">
