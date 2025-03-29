@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MapPinHouse } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import ProfileDropdown from "./ToggleMenu";
 // import { AuthContext } from "../auth";
@@ -12,16 +12,17 @@ function Navbar() {
 
   return (
     <>
-      <nav className="flex items-center justify-between px-4 py-2 bg-white shadow-lg">
-        <div className="flex items-center space-x-3">
-          <img
-            src="/src/assets/LC2.png"
-            alt="logo"
-            className="w-10 md:w-12 lg:w-14"
-          />
-          <p className=" text-lg md:text-xl font-semibold text-indigo-600">
-            localConnecto
-          </p>
+      <nav className="flex items-center justify-between px-4 md:px-6 lg:px-10 py-4 bg-white shadow-lg">
+        <div>
+          <NavLink
+            to="/"
+            className="flex items-center group transition-transform duration-300 hover:scale-105"
+          >
+            <MapPinHouse className="w-10 h-9 max-lg:h-9 max-md:h-8 text-indigo-600 md:w-12 lg:w-14 transition-colors duration-300 group-hover:text-indigo-700" />
+            <p className="text-lg md:text-[1.5rem] font-bold text-indigo-600 transition-colors duration-300 group-hover:text-indigo-700">
+              localConnecto
+            </p>
+          </NavLink>
         </div>
 
         <div className="hidden md:flex ml-10 items-center  space-x-4 lg:space-x-6">
@@ -50,21 +51,6 @@ function Navbar() {
           >
             Listed Items
           </NavLink>
-
-          {isAuthorized && (
-            <NavLink
-              to="/dashboard"
-              className={({ isActive }) =>
-                `text-base font-medium transition-colors hover:text-indigo-600 ${
-                  isActive
-                    ? "text-indigo-700 bg-indigo-100 px-2 py-1 rounded-sm"
-                    : "text-gray-600"
-                }`
-              }
-            >
-              Dashboard
-            </NavLink>
-          )}
 
           <NavLink
             to="/about"
@@ -145,18 +131,6 @@ function Navbar() {
             </NavLink>
 
             <NavLink
-              to="/dashboard"
-              className={({ isActive }) =>
-                `text-sm font-medium transition-colors hover:bg-indigo-50  py-2 px-4 rounded ${
-                  isActive ? "text-indigo-700 bg-indigo-100" : "text-gray-600"
-                }`
-              }
-              onClick={() => setMenuOpen(false)}
-            >
-              Dashboard
-            </NavLink>
-
-            <NavLink
               to="/about"
               className={({ isActive }) =>
                 `text-sm font-medium transition-colors hover:bg-indigo-50  py-2 px-4 rounded ${
@@ -168,23 +142,25 @@ function Navbar() {
               About
             </NavLink>
           </div>
-          <div className="flex flex-row space-x-3 pt-4 border-t justify-center pb-4">
-            <NavLink
-              to="/login"
-              onClick={() => setMenuOpen(false)}
-              className={`w-2/5  text-left py-2 px-4 rounded-md font-semibold text-indigo-600 border-1 hover:bg-indigo-100 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2}`}
-            >
-              <button className="w-full">Sign In</button>
-            </NavLink>
+          {!isAuthorized && (
+            <div className="flex flex-row space-x-3 pt-4 border-t justify-center pb-4">
+              <NavLink
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                className={`w-2/5  text-left py-2 px-4 rounded-md font-semibold text-indigo-600 border-1 hover:bg-indigo-100 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2}`}
+              >
+                <button className="w-full">Sign In</button>
+              </NavLink>
 
-            <NavLink
-              to="/signup"
-              onClick={() => setMenuOpen(false)}
-              className={`w-2/5 text-left py-2 px-4 rounded-md font-semibold bg-indigo-700 text-white hover:bg-indigo-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
-            >
-              <button className="w-full">Sign Up</button>
-            </NavLink>
-          </div>
+              <NavLink
+                to="/signup"
+                onClick={() => setMenuOpen(false)}
+                className={`w-2/5 text-left py-2 px-4 rounded-md font-semibold bg-indigo-700 text-white hover:bg-indigo-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
+              >
+                <button className="w-full">Sign Up</button>
+              </NavLink>
+            </div>
+          )}
         </div>
       )}
     </>

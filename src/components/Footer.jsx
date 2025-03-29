@@ -7,6 +7,7 @@ import {
   MapPin,
   Mail,
   Phone,
+  MapPinHouse,
 } from "lucide-react";
 
 function Footer() {
@@ -17,11 +18,7 @@ function Footer() {
           {/* Brand Section */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center space-x-1.5">
-              <img
-                src="/src/assets/LC2.png"
-                alt=""
-                className="w-12 h-12 text-white"
-              />
+              <MapPinHouse className="text-indigo-500 hover:text-indigo-400 transition-colors duration-300 h-8 w-8" />
               <span className="text-xl font-bold text-indigo-500 hover:text-indigo-400 transition-colors duration-300">
                 LocalConnecto
               </span>

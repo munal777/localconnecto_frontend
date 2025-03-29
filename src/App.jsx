@@ -22,7 +22,7 @@ import Dashboard from "./components/pages/Dashboard";
 import RedirectGoogleAuth from "./components/auth/GoogleRedirectHandler";
 import CreateListing from "./components/CreateListing";
 import ListingDetail from "./components/ListingDetails";
-
+import Profile from "./components/pages/Profile";
 
 function App() {
   const { isAuthorized } = userAuthentication();
@@ -39,11 +39,12 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={isAuthorized ? <Navigate to="/" /> : <Login />} />
           <Route path="/signup" element={isAuthorized ? <Navigate to="/" /> : <Signup />} />
-          <Route path="/profile" element={isAuthorized ? <ProfileUpdateForm />: <Home />} />
+          <Route path="/profile/edit" element={isAuthorized ? <ProfileUpdateForm />: <Home />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/listings/new" element={<CreateListing />} />
           <Route path="/listings/item/:id" element={<ListingDetail />} />
+          <Route path="/profile" element={isAuthorized ? <Profile /> : <Login />}/>
         </Routes>
         <Footer />
       </Router>
