@@ -1,115 +1,64 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { MapPin, Tag, User, Info } from "lucide-react";
 import { toast } from "react-toastify";
-
-// Sample listing data - in a real app, this would come from a database
-const listingsData = [
-  {
-    id: "1",
-    title: "Mountain Bike - Great Condition",
-    price: 150,
-    images: [
-      "https://images.unsplash.com/photo-1485965120184-e220f721d03e",
-      "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7",
-      "https://images.unsplash.com/photo-1576435728678-68d0fbf94e91",
-    ],
-    location: "Brooklyn, NY",
-    category: "Sports",
-    condition: "Good",
-    description:
-      "Mountain bike in great condition. Perfect for trails and city riding. Shimano gears, front suspension, and recently tuned up. Minor scratches but mechanically perfect. Pickup only.",
-    postedDate: "2023-09-15T15:30:00Z",
-    seller: {
-      id: "101",
-      name: "Alex Johnson",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-      rating: 4.8,
-      joinedDate: "January 2023",
-    },
-  },
-  {
-    id: "2",
-    title: "Wooden Coffee Table",
-    price: 65,
-    images: [
-      "https://images.unsplash.com/photo-1533090368676-1f5a5c25d06b",
-      "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91",
-      "https://images.unsplash.com/photo-1594224457860-02a83a933c1c",
-    ],
-    location: "Queens, NY",
-    category: "Furniture",
-    condition: "Like New",
-    description:
-      'Beautiful wooden coffee table with a modern design. Solid oak with a dark finish. Dimensions: 40" x 24" x 18". Only selling because we are moving to a smaller apartment. No damage or scratches.',
-    postedDate: "2023-09-10T12:15:00Z",
-    seller: {
-      id: "102",
-      name: "Maria Garcia",
-      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
-      rating: 4.9,
-      joinedDate: "March 2022",
-    },
-  },
-  {
-    id: "3",
-    title: "MacBook Pro 2021",
-    price: 1200,
-    images: [
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca4",
-      "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
-      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
-    ],
-    location: "Manhattan, NY",
-    category: "Electronics",
-    condition: "Good",
-    description:
-      "MacBook Pro 2021 model with M1 chip, 16GB RAM, and 512GB SSD. Battery health at 92%. Minor wear on the keyboard but works perfectly. Includes charger and original box. Local pickup preferred.",
-    postedDate: "2023-09-05T09:45:00Z",
-    seller: {
-      id: "103",
-      name: "David Wong",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-      rating: 4.7,
-      joinedDate: "November 2021",
-    },
-  },
-  {
-    id: "4",
-    title: "Houseplant Collection",
-    price: "Free",
-    images: [
-      "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
-      "https://images.unsplash.com/photo-1485955900006-10f4d324d411",
-      "https://images.unsplash.com/photo-1512428813834-c702c7702b78",
-    ],
-    location: "Bronx, NY",
-    category: "Home",
-    condition: "Good",
-    description:
-      "Free houseplant collection to a good home. Moving out of state and can't take my plants with me. Collection includes spider plants, pothos, snake plant, and a few succulents. All healthy and well cared for.",
-    postedDate: "2023-09-01T17:20:00Z",
-    seller: {
-      id: "104",
-      name: "Taylor Smith",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb",
-      rating: 4.6,
-      joinedDate: "April 2023",
-    },
-  },
-];
+import api from "./api/api";
+import { useUserProfile } from "./UserProfileContext";
 
 const ListingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [favorites, setFavorites] = useState([]);
+  const [listing, setListing] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { profile } = useUserProfile();
 
-  // Find the listing by ID
-  const listing = listingsData.find((item) => item.id === id);
+  // Fetch listing data
+  useEffect(() => {
+    const fetchListing = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/items/${id}/`);
+        setListing(response.data);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching listing:", err);
+        setError("Failed to load listing details");
+        toast.error("Failed to load listing details");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Handle error if listing not found
-  if (!listing) {
+    // Fetch favorites from localStorage or API
+    const storedFavorites = localStorage.getItem("favorites");
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites));
+    }
+
+    if (id) {
+      fetchListing();
+    }
+  }, [id]);
+
+  // Handle error if listing not found or loading
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-grow pt-24 pb-16 flex items-center justify-center">
+          <div className="text-center p-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Loading...
+            </h1>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !listing) {
     return (
       <div className="min-h-screen flex flex-col">
         <main className="flex-grow pt-24 pb-16 flex items-center justify-center">
@@ -131,24 +80,67 @@ const ListingDetail = () => {
     );
   }
 
-  // Format the date
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  };
+  // Format the date (already formatted from API)
+  const postedDate = listing.posted_date;
 
+  // Toggle favorite
   const toggleFavorite = (id) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
-    );
+    const updatedFavorites = favorites.includes(id)
+      ? favorites.filter((itemId) => itemId !== id)
+      : [...favorites, id];
+
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+
+    const message = favorites.includes(id)
+      ? "Removed from favorites"
+      : "Added to favorites";
+    toast.success(message);
   };
 
   const handleContactSeller = () => {
     toast.success("Contact request sent to seller!");
+  };
+
+  // Fix image URLs if needed
+  const getImageUrl = (imageObj) => {
+    if (!imageObj || !imageObj.image) return "";
+
+    let imageUrl = imageObj.image;
+    // If URL starts with 'image/upload/', handle it per your context pattern
+    if (imageUrl.startsWith("image/upload/")) {
+      return `https://res.cloudinary.com/dzetcdznm/${imageUrl}`;
+    }
+    return imageUrl;
+  };
+
+  // Get user profile image or display default
+  const getUserProfileImage = () => {
+    if (listing.user && listing.user.profile && listing.user.profile.image) {
+      const image = listing.user.profile.image.replace("image/upload/", "");
+      return image;
+    }
+    return null;
+  };
+
+  const getUserJoinData = () => {
+    if (
+      listing.user &&
+      listing.user.profile &&
+      listing.user.profile.created_at
+    ) {
+      return listing.user.profile.created_at;
+    }
+  };
+
+  const getUserPhoneNumber = () => {
+    if (
+      listing.user &&
+      listing.user.profile &&
+      listing.user.profile.phone_number
+    ) {
+      return listing.user.profile.phone_number;
+    }
   };
 
   return (
@@ -171,14 +163,14 @@ const ListingDetail = () => {
                 </Link>
                 <span className="mx-2 text-gray-500">/</span>
                 <Link
-                  to={`/listings/${listing.category.toLowerCase()}`}
+                  to={`/listings/category/${listing.category}`}
                   className="text-gray-500 hover:text-gray-700"
                 >
-                  {listing.category}
+                  {listing.category_name}
                 </Link>
                 <span className="mx-2 text-gray-500">/</span>
                 <span className="text-gray-900 truncate max-w-[150px] sm:max-w-none">
-                  {listing.title}
+                  {listing.title} - {listing.condition}
                 </span>
               </nav>
             </div>
@@ -186,35 +178,91 @@ const ListingDetail = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column - Image Gallery */}
               <div className="lg:col-span-2 space-y-4">
-                {/* Main image */}
-                <div className="rounded-lg overflow-hidden bg-gray-100 aspect-video relative">
-                  <img
-                    src={listing.images[activeImageIndex]}
-                    alt={listing.title}
-                    className="w-full h-full object-cover"
-                  />
+                {/* <div className="rounded-lg overflow-hidden bg-gray-100 aspect-video relative">
+                  {listing.images && listing.images.length > 0 ? (
+                    <img
+                      src={getImageUrl(listing.images[activeImageIndex])}
+                      alt={listing.title}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <p className="text-gray-500">No image available</p>
+                    </div>
+                  )}
                 </div>
 
-                {/* Thumbnails */}
-                <div className="flex space-x-2 overflow-x-auto pb-2">
-                  {listing.images.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setActiveImageIndex(index)}
-                      className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${
-                        index === activeImageIndex
-                          ? "border-indigo-500"
-                          : "border-transparent"
-                      }`}
-                    >
-                      <img
-                        src={image}
-                        alt={`${listing.title} thumbnail ${index + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
+                {listing.images && listing.images.length > 1 && (
+                  <div className="flex space-x-2 overflow-x-auto pb-2">
+                    {listing.images.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setActiveImageIndex(index)}
+                        className={`flex-shrink-0 w-20 h-20 rounded-md overflow-hidden border-2 ${
+                          index === activeImageIndex
+                            ? "border-indigo-500"
+                            : "border-transparent"
+                        }`}
+                      >
+                        <img
+                          src={getImageUrl(image)}
+                          alt={`${listing.title} thumbnail ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )} */}
+                <div
+                  className="relative rounded-lg overflow-hidden bg-gray-100"
+                  style={{ paddingBottom: "56.25%" /* 16:9 aspect ratio */ }}
+                >
+                  {listing.images && listing.images.length > 0 ? (
+                    <img
+                      src={getImageUrl(listing.images[activeImageIndex])}
+                      alt={listing.title}
+                      className="absolute inset-0 w-full h-full object-contain"
+                      style={{
+                        maxHeight: "100%",
+                        maxWidth: "100%",
+                        margin: "auto",
+                        display: "block",
+                      }}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+                      <p className="text-gray-500">No image available</p>
+                    </div>
+                  )}
                 </div>
+
+                {/* Thumbnails with consistent sizing */}
+                {listing.images && listing.images.length > 1 && (
+                  <div className="flex space-x-2 overflow-x-auto py-2">
+                    {listing.images.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setActiveImageIndex(index)}
+                        className={`flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 ${
+                          index === activeImageIndex
+                            ? "border-indigo-500"
+                            : "border-transparent"
+                        }`}
+                        style={{
+                          minWidth: "64px", // Ensures consistent width
+                        }}
+                      >
+                        <div className="relative w-full h-full">
+                          <img
+                            src={getImageUrl(image)}
+                            alt={`${listing.title} thumbnail ${index + 1}`}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* Listing Details */}
                 <div className="mt-8">
@@ -236,7 +284,7 @@ const ListingDetail = () => {
                           Category
                         </h3>
                         <p className="text-gray-900 font-medium">
-                          {listing.category}
+                          {listing.category_name}
                         </p>
                       </div>
                     </div>
@@ -264,9 +312,7 @@ const ListingDetail = () => {
                       <h3 className="text-sm font-medium text-gray-500">
                         Posted
                       </h3>
-                      <p className="text-gray-900">
-                        {formatDate(listing.postedDate)}
-                      </p>
+                      <p className="text-gray-900">{postedDate}</p>
                     </div>
                   </div>
                 </div>
@@ -291,14 +337,14 @@ const ListingDetail = () => {
                     <div className="flex items-center justify-between">
                       <p
                         className={`text-2xl font-bold ${
-                          listing.price === "Free"
+                          listing.listing_type === "free"
                             ? "text-green-600"
                             : "text-indigo-600"
                         }`}
                       >
-                        {listing.price === "Free"
+                        {listing.listing_type === "free"
                           ? "Free"
-                          : `$${listing.price.toFixed(2)}`}
+                          : `Rs ${listing.price}`}
                       </p>
                       <button
                         onClick={() => toggleFavorite(listing.id)}
@@ -334,31 +380,63 @@ const ListingDetail = () => {
                     </h2>
 
                     <div className="flex items-center">
-                      <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                        <img
-                          src={listing.seller.avatar}
-                          alt={listing.seller.name}
-                          className="w-full h-full object-cover"
-                        />
+                      <div className="w-12 h-12 rounded-full overflow-hidden mr-4 bg-gray-200">
+                        {getUserProfileImage() ? (
+                          <img
+                            src={getUserProfileImage()}
+                            alt={`${listing.first_name} ${listing.last_name}`}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-indigo-100 text-indigo-500">
+                            <User size={24} />
+                          </div>
+                        )}
                       </div>
 
                       <div>
                         <h3 className="font-medium text-gray-900">
-                          {listing.seller.name}
+                          {listing.first_name} {listing.last_name}
                         </h3>
                         <p className="text-sm text-gray-500">
-                          Member since {listing.seller.joinedDate}
+                          Member since{" "}
+                          {new Date(getUserJoinData()).toLocaleDateString(
+                            "en-US",
+                            { month: "long", year: "numeric" }
+                          )}
                         </p>
                       </div>
                     </div>
 
                     <div className="mt-6">
-                      <button
-                        onClick={handleContactSeller}
-                        className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                      >
-                        Contact Seller
-                      </button>
+                      {profile.id === listing.user.profile.id ? (
+                        <div className="flex space-x-3 ">
+                          <button
+                            // onClick={handleContactSeller}
+                            className="w-full px-4 py-2 bg-orange-500 text-white  rounded-md hover:bg-orange-600 transition-colors"
+                          >
+                            Item booked
+                          </button>
+                          <button
+                            // onClick={handleContactSeller}
+                            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      ) : (
+                        <a
+                          href={`https://api.whatsapp.com/send?phone=${getUserPhoneNumber()}`}
+                          target="_blank"
+                        >
+                          <button
+                            onClick={handleContactSeller}
+                            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                          >
+                            Contact Seller
+                          </button>
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -394,3 +472,4 @@ const ListingDetail = () => {
 };
 
 export default ListingDetail;
+

@@ -12,8 +12,8 @@ export const userAuthentication = () => {
       const token = localStorage.getItem(ACCESS_TOKEN);
       const googleAccessToken = localStorage.getItem(GOOGLE_ACCESS_TOKEN);
 
-      console.log("Access_token", token);
-      console.log("Google_access_token", googleAccessToken);
+      // console.log("Access_token", token);
+      // console.log("Google_access_token", googleAccessToken);
 
       if (token) {
         const decoded = jwtDecode(token);

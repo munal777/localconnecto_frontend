@@ -12,104 +12,62 @@ import {
   LogOut,
   Edit,
   Plus,
+  Tag,
 } from "lucide-react";
 import { UserProfileAPI } from "../api/userProfile";
 import { toast } from "react-toastify";
-
-// Sample user data
-const userData = {
-  listings: [
-    {
-      id: "101",
-      title: "Vintage Camera Collection",
-      price: 120,
-      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32",
-      location: "Brooklyn, NY",
-      category: "Electronics",
-    },
-    {
-      id: "102",
-      title: "Ceramic Plant Pots (Set of 3)",
-      price: 45,
-      image: "https://images.unsplash.com/photo-1485955900006-10f4d324d411",
-      location: "Brooklyn, NY",
-      category: "Home",
-    },
-    {
-      id: "103",
-      title: "Designer Sunglasses",
-      price: 75,
-      image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f",
-      location: "Brooklyn, NY",
-      category: "Fashion",
-    },
-  ],
-  favorites: [
-    {
-      id: "201",
-      title: "Acoustic Guitar",
-      price: 180,
-      image: "https://images.unsplash.com/photo-1525201548942-d8732f6617a0",
-      location: "Manhattan, NY",
-      category: "Music",
-    },
-    {
-      id: "202",
-      title: "Antique Desk Lamp",
-      price: 40,
-      image: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15",
-      location: "Queens, NY",
-      category: "Home",
-    },
-  ],
-};
+import { useUserProfile } from "../UserProfileContext";
+import api from "../api/api";
 
 const Profile = () => {
-  const [profile, SetProfile] = useState({
-    id: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    image: "",
-    bio: "",
-    location: "",
-    phone_number: "",
-    created_at: ""
-  });
+  const {
+    profile,
+    setProfile,
+    isLoading: contextLoading,
+    fetchProfile,
+  } = useUserProfile();
 
   const [activeTab, setActiveTab] = useState("listings");
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
   const [imageFile, setImageFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [listings, setUserListings] = useState([]);
+
+  
+
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     try {
+  //       setIsLoading(true);
+  //       const res = await UserProfileAPI.getProfile();
+
+  //       const profileData = Array.isArray(res.data) ? res.data[0] : res.data;
+
+  //       // Fix the image URL if needed
+  //       if (
+  //         profileData.image &&
+  //         profileData.image.startsWith("image/upload/")
+  //       ) {
+  //         profileData.image = profileData.image.replace("image/upload/", "");
+  //       }
+
+  //       SetProfile(profileData);
+  //       setFormData({ ...profileData });
+  //     } catch (err) {
+  //       toast.error("Failed to fetch profile");
+  //       console.error(err);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchProfile();
+  // }, []);
+
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setIsLoading(true);
-        const res = await UserProfileAPI.getProfile();
-
-        const profileData = Array.isArray(res.data) ? res.data[0] : res.data;
-
-        // Fix the image URL if needed
-        if (
-          profileData.image &&
-          profileData.image.startsWith("image/upload/")
-        ) {
-          profileData.image = profileData.image.replace("image/upload/", "");
-        }
-
-        SetProfile(profileData);
-        setFormData({ ...profileData });
-      } catch (err) {
-        toast.error("Failed to fetch profile");
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchProfile();
-  }, []);
+    setFormData({ ...profile });
+  }, [profile]);
 
   // Handle form input changes
   const handleFormChange = (e) => {
@@ -183,9 +141,11 @@ const Profile = () => {
 
       if (response && response.data) {
         // Update only the image in the profile state
-        SetProfile((prev) => ({
+        const updatedImage = response.data.image || response.data;
+
+        setProfile((prev) => ({
           ...prev,
-          image: response.data.image || response.data,
+          image: updatedImage,
         }));
 
         toast.success("Profile image updated successfully");
@@ -221,10 +181,19 @@ const Profile = () => {
         profile.id,
         updateData
       );
-      SetProfile((prev) => ({
+
+      const newProfileData = {
+        ...profile,
         ...updatedProfile.data,
-        image: prev.image, // Keep the existing image
-      }));
+        image: profile.image,
+      };
+
+      setProfile(newProfileData);
+
+      // setProfile((prev) => ({
+      //   ...updatedProfile.data,
+      //   image: prev.image, // Keep the existing image
+      // }));
       setIsEditing(false);
       toast.success("Profile updated successfully");
     } catch (err) {
@@ -251,13 +220,20 @@ const Profile = () => {
         updateData
       );
 
-      SetProfile((prev) => ({
-        ...prev,
-        [field]:
-          field === "image" && updatedData.data
-            ? updatedData.data.image
-            : value,
-      }));
+      // setProfile((prev) => ({
+      //   ...prev,
+      //   [field]:
+      //     field === "image" && updatedData.data
+      //       ? updatedData.data.image
+      //       : value,
+      // }));
+      const fieldValue =
+        field === "image" && updatedData.data ? updatedData.data.image : value;
+
+      setProfile({
+        ...profile,
+        [field]: fieldValue,
+      });
 
       toast.success(`${field} updated successfully`);
       return updatedData;
@@ -274,9 +250,9 @@ const Profile = () => {
     setImageFile(null);
   };
 
-  const [favorites, setFavorites] = useState(
-    userData.favorites.map((item) => item.id)
-  );
+  // const [favorites, setFavorites] = useState(
+  //   userData.favorites.map((item) => item.id)
+  // );
 
   const toggleFavorite = (id) => {
     setFavorites((prev) =>
@@ -284,8 +260,38 @@ const Profile = () => {
     );
   };
 
+  // const profileImageUrl =
+  //   formData.previewImage || profile.image || "/src/assets/profile.jpg";
+
+  useEffect(() => {
+    const userFun = async () => {
+      const listingsResponse = await api.get("/items/users_items");
+      setUserListings(listingsResponse.data);
+    };
+
+    userFun();
+  }, []);
+
+  
+
+  const getImageUrl = (listing) => {
+    if (listing.images && listing.images.length > 0) {
+      // Cloudinary URL format
+      return `https://res.cloudinary.com/dzetcdznm/${listing.images[0].image}`;
+    }
+    return "https://images.unsplash.com/photo-1592078615290-033ee584dd43?ixlib=rb-4.0.3&auto=format&fit=crop&w=700&q=80"; // Fallback image
+  };
+
+  const formatPrice = (listing) => {
+    if (listing.listing_type === "free") {
+      return "Free";
+    }
+    return listing.price ? `Rs ${listing.price}` : "Free";
+  };
+
+  const { imageURL } = useUserProfile();
   const profileImageUrl =
-    formData.previewImage || profile.image || "/src/assets/profile.jpg";
+    formData.previewImage || imageURL || "/src/assets/profile.jpg";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -293,8 +299,9 @@ const Profile = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Profile Header */}
+            {/* bg-gradient-to-r from-indigo-200 to-indigo-50 */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="h-32 bg-gradient-to-r from-indigo-200 to-indigo-50"></div>
+              <div className="h-16 "></div>
               <div className="p-6 sm:p-8 -mt-16">
                 <div className="flex flex-col sm:flex-row items-center">
                   <div className="relative">
@@ -326,7 +333,7 @@ const Profile = () => {
                     <div className="flex flex-col sm:flex-row items-center sm:items-start mt-2 space-y-1 sm:space-y-0 sm:space-x-4 text-gray-600">
                       <div className="flex items-center">
                         <MapPin size={16} className="mr-1 flex-shrink-0" />
-                        <span>{profile.location || 'Not Provided'}</span>
+                        <span>{profile.location || "Not Provided"}</span>
                       </div>
                       <div className="flex items-center">
                         <Mail size={16} className="mr-1 flex-shrink-0" />
@@ -339,12 +346,6 @@ const Profile = () => {
                   </div>
 
                   <div className="mt-6 sm:mt-0 sm:ml-auto flex space-x-2">
-                    {/* <Link to="/profile/edit">
-                      <button className="inline-flex items-center justify-center rounded-md font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none border border-indigo-600 text-indigo-600 hover:bg-indigo-50 h-9 px-3 text-sm">
-                        <Edit size={16} className="mr-1" />
-                        Edit Profile
-                      </button>
-                    </Link> */}
                     <Link to="/login">
                       <button className="inline-flex items-center justify-center rounded-md font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none text-red-600 hover:bg-red-100 h-9 px-3 text-sm">
                         <LogOut size={16} className="mr-1" />
@@ -369,9 +370,9 @@ const Profile = () => {
                   </div>
                   <div className="ml-4">
                     <p className="text-sm font-medium text-gray-500">
-                      Active Listings
+                      My Active Listings
                     </p>
-                    <p className="text-2xl font-semibold">12</p>
+                    <p className="text-2xl font-semibold">{listings.length}</p>
                   </div>
                 </div>
               </div>
@@ -442,74 +443,69 @@ const Profile = () => {
                     </Link>
                   </div>
 
-                  {userData.listings.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {userData.listings.map((item) => (
+                  {listings.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-20">
+                      {listings.map((listing) => (
                         <Link
-                          key={item.id}
-                          to={`/item/${item.id}`}
-                          className="group relative overflow-hidden rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] flex flex-col h-full"
+                          key={listing.id}
+                          to={`/listings/${listing.id}`}
+                          className="group"
                         >
-                          <div className="relative aspect-square overflow-hidden">
-                            <img
-                              src={item.image}
-                              alt={item.title}
-                              className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                              loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                toggleFavorite(item.id);
-                              }}
-                              className={`absolute top-3 right-3 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-200 ${
-                                favorites.includes(item.id)
-                                  ? "text-red-500"
-                                  : "text-gray-500 hover:text-red-500"
-                              }`}
-                              aria-label={
-                                favorites.includes(item.id)
-                                  ? "Remove from favorites"
-                                  : "Add to favorites"
-                              }
-                            >
-                              <Heart
-                                size={18}
-                                fill={
-                                  favorites.includes(item.id)
-                                    ? "currentColor"
-                                    : "none"
-                                }
-                              />
-                            </button>
-
-                            <div className="absolute top-3 left-3">
-                              <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-white/80 backdrop-blur-sm text-primary">
-                                {item.category}
-                              </span>
+                          <div className="bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 hover:shadow-md h-full flex flex-col">
+                            <div className="relative h-56 bg-gray-200">
+                              {listing.images && listing.images.length > 0 ? (
+                                <img
+                                  src={getImageUrl(listing)}
+                                  alt={listing.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                  <span className="text-gray-400">
+                                    No image available
+                                  </span>
+                                </div>
+                              )}
+                              <button className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white text-gray-600 hover:text-red-500 transition-colors">
+                                <Heart className="w-5 h-5" />
+                              </button>
+                              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-white font-semibold">
+                                    {formatPrice(listing)}
+                                  </span>
+                                  <span className="text-white text-sm flex items-center">
+                                    <MapPin className="w-4 h-4 mr-1" />{" "}
+                                    {listing.location}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="absolute top-3 left-3">
+                                <span className="inline-block px-2 py-1 text-xs font-medium rounded-full border border-indigo-100 bg-indigo-50/80 backdrop-blur-sm text-indigo-700">
+                                  {listing.category_name}
+                                </span>
+                              </div>
                             </div>
-                          </div>
-
-                          <div className="p-4 flex flex-col flex-grow">
-                            <h3 className="text-lg font-medium text-gray-900 line-clamp-2 mb-1">
-                              {item.title}
-                            </h3>
-
-                            <div className="flex items-center text-gray-500 text-sm mt-auto">
-                              <MapPin
-                                size={14}
-                                className="mr-1 flex-shrink-0"
-                              />
-                              <span className="truncate">{item.location}</span>
+                            <div className="p-4 flex-grow">
+                              <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
+                                {listing.title}
+                              </h3>
+                              <p className="text-gray-600 text-sm line-clamp-2">
+                                {listing.description}
+                              </p>
                             </div>
-
-                            <div className="mt-2 flex items-center justify-between">
-                              <span className="font-semibold text-primary">
-                                ${item.price.toFixed(2)}
-                              </span>
+                            <div className="px-4 pb-4 flex justify-between">
+                              <div className="flex items-center">
+                                <Tag className="w-4 h-4 text-indigo-600 mr-1" />
+                                <span className="text-xs font-medium text-indigo-600">
+                                  {listing.listing_type === "free"
+                                    ? "Free Item"
+                                    : "For Sale"}
+                                </span>
+                              </div>
+                              <div className="text-xs font-medium text-indigo-600 capitalize flex items-center">
+                                <span>{listing.posted_date}</span>
+                              </div>
                             </div>
                           </div>
                         </Link>
@@ -540,102 +536,23 @@ const Profile = () => {
 
               {/* Favorites Tab */}
               {activeTab === "favorites" && (
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                    Favorites
-                  </h2>
-
-                  {userData.favorites.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {userData.favorites.map((item) => (
-                        <Link
-                          key={item.id}
-                          to={`/item/${item.id}`}
-                          className="group relative overflow-hidden rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px] flex flex-col h-full"
-                        >
-                          <div className="relative aspect-square overflow-hidden">
-                            <img
-                              src={item.image}
-                              alt={item.title}
-                              className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                              loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                toggleFavorite(item.id);
-                              }}
-                              className={`absolute top-3 right-3 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-200 ${
-                                favorites.includes(item.id)
-                                  ? "text-red-500"
-                                  : "text-gray-500 hover:text-red-500"
-                              }`}
-                              aria-label={
-                                favorites.includes(item.id)
-                                  ? "Remove from favorites"
-                                  : "Add to favorites"
-                              }
-                            >
-                              <Heart
-                                size={18}
-                                fill={
-                                  favorites.includes(item.id)
-                                    ? "currentColor"
-                                    : "none"
-                                }
-                              />
-                            </button>
-
-                            <div className="absolute top-3 left-3">
-                              <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-white/80 backdrop-blur-sm text-primary">
-                                {item.category}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="p-4 flex flex-col flex-grow">
-                            <h3 className="text-lg font-medium text-gray-900 line-clamp-2 mb-1">
-                              {item.title}
-                            </h3>
-
-                            <div className="flex items-center text-gray-500 text-sm mt-auto">
-                              <MapPin
-                                size={14}
-                                className="mr-1 flex-shrink-0"
-                              />
-                              <span className="truncate">{item.location}</span>
-                            </div>
-
-                            <div className="mt-2 flex items-center justify-between">
-                              <span className="font-semibold text-primary">
-                                ${item.price.toFixed(2)}
-                              </span>
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                      <Heart size={48} className="mx-auto text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">
-                        No favorites yet
-                      </h3>
-                      <p className="text-gray-600 mb-4">
-                        Browse listings and click the heart icon to save items
-                        you're interested in
-                      </p>
-                      <Link to="/listings">
-                        <button className="inline-flex items-center justify-center rounded-md font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
-                          Browse Listings
-                        </button>
-                      </Link>
-                    </div>
-                  )}
+                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                  <Heart size={48} className="mx-auto text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No favorites yet
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Browse listings and click the heart icon to save items
+                    you're interested in
+                  </p>
+                  <Link to="/listings">
+                    <button className="inline-flex items-center justify-center rounded-md font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
+                      Browse Listings
+                    </button>
+                  </Link>
                 </div>
+                //   )}
+                // </div>
               )}
 
               {/* Settings Tab */}
@@ -774,7 +691,9 @@ const Profile = () => {
                             <h4 className="text-sm font-medium text-gray-500 mb-1">
                               Bio
                             </h4>
-                            <p className="text-gray-900">{profile.bio || "Add bio for your profile."}</p>
+                            <p className="text-gray-900">
+                              {profile.bio || "Add bio for your profile."}
+                            </p>
                           </div>
 
                           <div>

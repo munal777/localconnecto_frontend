@@ -2,47 +2,47 @@ import { useState, useRef, useEffect } from "react";
 import { LogOut, User, Upload, Heart, ShoppingBasket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { userAuthentication } from "./auth/auth";
-import { UserProfileAPI } from "./api/userProfile";
+import { useUserProfile } from "./UserProfileContext";
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const [profile, setProfile] = useState({
-    id: "",
-    first_name: "",
-    last_name: "",
-    email: "",
-    image: "",
-    bio: "",
-    location: "",
-    phone_number: "",
-  });
-  const [error, setError] = useState(null);
-
   const dropdownRef = useRef(null);
-
   const { isAuthorized, logout } = userAuthentication();
+  // const [profile, setProfile] = useState({
+  //   id: "",
+  //   first_name: "",
+  //   last_name: "",
+  //   email: "",
+  //   image: "",
+  //   bio: "",
+  //   location: "",
+  //   phone_number: "",
+  // });
+  // const [error, setError] = useState(null);
+
+  const { profile, error } = useUserProfile();
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    const userData = async () => {
-      try {
-        const res = await UserProfileAPI.getProfile();
-        const profileData = Array.isArray(res.data) ? res.data[0] : res.data;
+    // const userData = async () => {
+    //   try {
+    //     const res = await UserProfileAPI.getProfile();
+    //     const profileData = Array.isArray(res.data) ? res.data[0] : res.data;
 
-        if (
-          profileData.image &&
-          profileData.image.startsWith("image/upload/")
-        ) {
-          profileData.image = profileData.image.replace("image/upload/", "");
-        }
+    //     if (
+    //       profileData.image &&
+    //       profileData.image.startsWith("image/upload/")
+    //     ) {
+    //       profileData.image = profileData.image.replace("image/upload/", "");
+    //     }
 
-        setProfile(profileData);
-      } catch (err) {
-        setError("Failed to fetch user data.");
-      }
-    };
+    //     setProfile(profileData);
+    //   } catch (err) {
+    //     setError("Failed to fetch user data.");
+    //   }
+    // };
 
-    userData();
+    // userData();
 
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -64,7 +64,10 @@ export default function ProfileDropdown() {
     logout();
   };
 
-  let imgSrc = profile.image || "/src/assets/profile.jpg";
+  // let imgSrc = profile?.image || "/src/assets/profile.jpg";
+
+  const { imageURL } = useUserProfile();
+  let imgSrc = imageURL || "/src/assets/profile.jpg";
 
   return (
     <div className="relative flex justify-end" ref={dropdownRef}>

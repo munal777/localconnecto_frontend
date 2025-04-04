@@ -2,3 +2,8 @@
     margin-top: 60px !important; /* Adjust this based on your navbar height */
     z-index: 2000 !important; /* Ensures toast appears above other elements */
   }
+
+  option:hover {
+    background-color: #6366f1; /* Indigo-500 */
+    color: white;
+  }
