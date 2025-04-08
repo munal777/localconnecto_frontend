@@ -23,6 +23,8 @@ import CreateListing from "./components/CreateListing";
 import ListingDetail from "./components/ListingDetails";
 import Profile from "./components/pages/Profile";
 import { UserProfileProvider } from "./components/UserProfileContext";
+import EditListing from "./components/pages/EditListings";
+
 
 function App() {
   const { isAuthorized } = userAuthentication();
@@ -45,6 +47,7 @@ function App() {
           <Route path="/listings/new" element={isAuthorized ? <CreateListing /> : <Login />} />
           <Route path="/listings/:id" element={<ListingDetail />} />
           <Route path="/profile" element={isAuthorized ? <Profile /> : <Login />}/>
+          <Route path="/edit-listing/:id" element={<EditListing/>} />
         </Routes>
         <Footer />
         </UserProfileProvider>

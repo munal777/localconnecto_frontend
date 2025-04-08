@@ -418,7 +418,7 @@ const ListingDetail = () => {
                             Item booked
                           </button>
                           <button
-                            // onClick={handleContactSeller}
+                            onClick={() => navigate(`/edit-listing/${listing.id}`)}
                             className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
                           >
                             Edit
