@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MapPin, Image, ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
-import api from "./api/api";
+import api from "../api/api";
 
 const conditions = ["New", "Like New", "Good", "Fair", "Poor"];
 

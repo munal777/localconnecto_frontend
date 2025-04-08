@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/api";
-import { ACCESS_TOKEN, REFRESH_TOKEN } from "../../token";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../token";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";

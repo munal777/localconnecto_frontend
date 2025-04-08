@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { UserProfileAPI } from "../api/userProfile";
 import { toast } from "react-toastify";
-import { useUserProfile } from "../UserProfileContext";
+import { useUserProfile } from "../components/UserProfileContext";
 import api from "../api/api";
 
 const Profile = () => {

@@ -1,6 +1,6 @@
 // src/context/UserProfileContext.jsx
 import { createContext, useState, useContext, useEffect } from 'react';
-import { UserProfileAPI } from './api/userProfile';
+import { UserProfileAPI } from '../api/userProfile';
 const UserProfileContext = createContext();
 
 export const UserProfileProvider = ({ children }) => {

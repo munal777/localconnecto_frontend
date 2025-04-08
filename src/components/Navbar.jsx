@@ -3,7 +3,7 @@ import { Menu, X, MapPinHouse } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import ProfileDropdown from "./ToggleMenu";
 // import { AuthContext } from "../auth";
-import { userAuthentication } from "./auth/auth";
+import { userAuthentication } from "../auth/auth";
 
 function Navbar() {
   const { isAuthorized } = userAuthentication();

@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { MapPin, Tag, User, Info } from "lucide-react";
 import { toast } from "react-toastify";
-import api from "./api/api";
-import { useUserProfile } from "./UserProfileContext";
+import api from "../api/api";
+import { useUserProfile } from "../components/UserProfileContext";
 
 const ListingDetail = () => {
   const { id } = useParams();

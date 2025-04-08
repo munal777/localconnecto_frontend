@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { LogOut, User, Upload, Heart, ShoppingBasket } from "lucide-react";
 import { Link } from "react-router-dom";
-import { userAuthentication } from "./auth/auth";
+import { userAuthentication } from "../auth/auth";
 import { useUserProfile } from "./UserProfileContext";
 
 export default function ProfileDropdown() {

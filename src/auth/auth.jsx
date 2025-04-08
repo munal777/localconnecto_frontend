@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
-import { ACCESS_TOKEN, GOOGLE_ACCESS_TOKEN, REFRESH_TOKEN } from "../../token";
+import { ACCESS_TOKEN, GOOGLE_ACCESS_TOKEN, REFRESH_TOKEN } from "../token";
 import api from "../api/api";
 
 

@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "./components/Navbar";
-import Signup from "./components/forms/Signup";
-import Login from "./components/forms/Login";
+import Signup from "./forms/Signup";
+import Login from "./forms/Login";
 import {
   BrowserRouter as Router,
   Routes,
@@ -10,20 +10,19 @@ import {
 } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import "./style.css"; 
-import Home from "./components/pages/Home";
-import ListedItems from "./components/pages/ListedItems";
-import About from "./components/pages/About";
-import NotFound from "./components/pages/NotFound";
-import { userAuthentication } from "./components/auth/auth";
+import Home from "./pages/Home";
+import ListedItems from "./pages/ListedItems";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound";
+import { userAuthentication } from "./auth/auth";
 import { ToastContainer } from "react-toastify";
 import Footer from "./components/Footer";
-import Dashboard from "./components/pages/Dashboard";
-import RedirectGoogleAuth from "./components/auth/GoogleRedirectHandler";
-import CreateListing from "./components/CreateListing";
-import ListingDetail from "./components/ListingDetails";
-import Profile from "./components/pages/Profile";
+import RedirectGoogleAuth from "./auth/GoogleRedirectHandler";
+import CreateListing from "./pages/CreateListing";
+import ListingDetail from "./pages/ListingDetails";
+import Profile from "./pages/Profile";
 import { UserProfileProvider } from "./components/UserProfileContext";
-import EditListing from "./components/pages/EditListings";
+import EditListing from "./pages/EditListings";
 
 
 function App() {
@@ -43,7 +42,6 @@ function App() {
           <Route path="/login" element={isAuthorized ? <Navigate to="/" /> : <Login />} />
           <Route path="/signup" element={isAuthorized ? <Navigate to="/" /> : <Signup />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/listings/new" element={isAuthorized ? <CreateListing /> : <Login />} />
           <Route path="/listings/:id" element={<ListingDetail />} />
           <Route path="/profile" element={isAuthorized ? <Profile /> : <Login />}/>
