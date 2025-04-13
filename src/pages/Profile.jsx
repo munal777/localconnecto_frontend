@@ -22,7 +22,7 @@ import api from "../api/api";
 const Profile = () => {
   const {
     profile,
-    setProfile,
+    updateProfile,
     isLoading: contextLoading,
     fetchProfile,
   } = useUserProfile();
@@ -33,36 +33,6 @@ const Profile = () => {
   const [imageFile, setImageFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [listings, setUserListings] = useState([]);
-
-  
-
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       const res = await UserProfileAPI.getProfile();
-
-  //       const profileData = Array.isArray(res.data) ? res.data[0] : res.data;
-
-  //       // Fix the image URL if needed
-  //       if (
-  //         profileData.image &&
-  //         profileData.image.startsWith("image/upload/")
-  //       ) {
-  //         profileData.image = profileData.image.replace("image/upload/", "");
-  //       }
-
-  //       SetProfile(profileData);
-  //       setFormData({ ...profileData });
-  //     } catch (err) {
-  //       toast.error("Failed to fetch profile");
-  //       console.error(err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-  //   fetchProfile();
-  // }, []);
 
 
   useEffect(() => {
@@ -143,7 +113,7 @@ const Profile = () => {
         // Update only the image in the profile state
         const updatedImage = response.data.image || response.data;
 
-        setProfile((prev) => ({
+        updateProfile((prev) => ({
           ...prev,
           image: updatedImage,
         }));
@@ -188,12 +158,7 @@ const Profile = () => {
         image: profile.image,
       };
 
-      setProfile(newProfileData);
-
-      // setProfile((prev) => ({
-      //   ...updatedProfile.data,
-      //   image: prev.image, // Keep the existing image
-      // }));
+      updateProfile(newProfileData);
       setIsEditing(false);
       toast.success("Profile updated successfully");
     } catch (err) {
@@ -204,51 +169,51 @@ const Profile = () => {
     }
   };
 
-  const handlePartialUpdate = async (field, value) => {
-    try {
-      const updateData =
-        field === "image"
-          ? new FormData() // Use FormData for image
-          : { [field]: value };
+  // const handlePartialUpdate = async (field, value) => {
+  //   try {
+  //     const updateData =
+  //       field === "image"
+  //         ? new FormData() // Use FormData for image
+  //         : { [field]: value };
 
-      if (field === "image") {
-        updateData.append("image", value);
-      }
+  //     if (field === "image") {
+  //       updateData.append("image", value);
+  //     }
 
-      const updatedData = await UserProfileAPI.patchProfile(
-        profile.id,
-        updateData
-      );
+  //     const updatedData = await UserProfileAPI.patchProfile(
+  //       profile.id,
+  //       updateData
+  //     );
 
-      // setProfile((prev) => ({
-      //   ...prev,
-      //   [field]:
-      //     field === "image" && updatedData.data
-      //       ? updatedData.data.image
-      //       : value,
-      // }));
-      const fieldValue =
-        field === "image" && updatedData.data ? updatedData.data.image : value;
+  //     // setProfile((prev) => ({
+  //     //   ...prev,
+  //     //   [field]:
+  //     //     field === "image" && updatedData.data
+  //     //       ? updatedData.data.image
+  //     //       : value,
+  //     // }));
+  //     const fieldValue =
+  //       field === "image" && updatedData.data ? updatedData.data.image : value;
 
-      setProfile({
-        ...profile,
-        [field]: fieldValue,
-      });
+  //     setProfile({
+  //       ...profile,
+  //       [field]: fieldValue,
+  //     });
 
-      toast.success(`${field} updated successfully`);
-      return updatedData;
-    } catch (err) {
-      console.error(`Failed to update ${field}:`, err);
-      toast.error(`Failed to update ${field}`);
-    }
-  };
+  //     toast.success(`${field} updated successfully`);
+  //     return updatedData;
+  //   } catch (err) {
+  //     console.error(`Failed to update ${field}:`, err);
+  //     toast.error(`Failed to update ${field}`);
+  //   }
+  // };
 
   // Reset form to original profile data
-  const handleCancel = () => {
-    setFormData({ ...profile });
-    setIsEditing(false);
-    setImageFile(null);
-  };
+  // const handleCancel = () => {
+  //   setFormData({ ...profile });
+  //   setIsEditing(false);
+  //   setImageFile(null);
+  // };
 
   // const [favorites, setFavorites] = useState(
   //   userData.favorites.map((item) => item.id)

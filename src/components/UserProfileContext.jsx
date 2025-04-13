@@ -1,6 +1,7 @@
-// src/context/UserProfileContext.jsx
+
 import { createContext, useState, useContext, useEffect } from 'react';
 import { UserProfileAPI } from '../api/userProfile';
+
 const UserProfileContext = createContext();
 
 export const UserProfileProvider = ({ children }) => {
@@ -42,21 +43,26 @@ export const UserProfileProvider = ({ children }) => {
     }
   };
 
-  const updateProfileContext = (updatedProfile) => {
-
-    if (updatedProfile.image && updatedProfile.image !== profile.image) {
-        setImageVersion(prev => prev + 1);
-      }
-
-    setProfile(prev => ({
-      ...prev,
-      ...updatedProfile
-    }));
-  };
-
   useEffect(() => {
     fetchProfile();
   }, [setProfile]);
+
+  const updateProfile = (updatedProfile) => {
+
+    const actualUpdate = 
+      typeof updatedProfile === 'function'
+        ? updatedProfile(profile)
+        : updatedProfile
+
+    if (actualUpdate.image && actualUpdate.image !== profile.image) {
+        setImageVersion(prev => prev + 1);
+        
+      }
+    setProfile(prev => ({
+      ...prev,
+      ...actualUpdate
+    }));
+  };
 
   const imageURL = profile.image 
     ? `${profile.image}${profile.image.includes('?') ? '&' : '?'}v=${imageVersion}` 
@@ -66,7 +72,7 @@ export const UserProfileProvider = ({ children }) => {
     <UserProfileContext.Provider 
       value={{ 
         profile, 
-        setProfile: updateProfileContext, 
+        updateProfile, 
         isLoading, 
         error, 
         fetchProfile,
